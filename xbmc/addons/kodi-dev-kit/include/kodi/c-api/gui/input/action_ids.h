@@ -308,6 +308,10 @@ enum ADDON_ACTION
   /// in videoFullScreen.xml window id=2005
   ADDON_ACTION_CYCLE_SUBTITLE = 99,
 
+  /// @brief <b>`99 `</b>: Switch to previous subtitle of movie, but will not enable/disable the subtitles. Can be used
+  /// in videoFullScreen.xml window id=2005
+  ADDON_ACTION_REVERSE_CYCLE_SUBTITLE = 9999999999, // What do I do with this value? Do I use the next available or shift everything?
+
   /// @brief <b>`100`</b>: Mouse action values start.
   ///
   /// Ends with @ref ADDON_ACTION_MOUSE_END.

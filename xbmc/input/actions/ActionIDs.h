@@ -272,6 +272,10 @@ constexpr const int ACTION_CHAPTER_OR_BIG_STEP_BACK = 98;
 //! Can be used in videoFullScreen.xml window id=2005
 constexpr const int ACTION_CYCLE_SUBTITLE = 99;
 
+//! Switch to previous subtitle of movie, but will not enable/disable the subtitles.
+//! Can be used in videoFullScreen.xml window id=2005
+constexpr const int ACTION_REVERSE_CYCLE_SUBTITLE = 99999999; //What should this value be? Is it the next unused, or does everything shift?
+
 constexpr const int ACTION_MOUSE_START = 100;
 constexpr const int ACTION_MOUSE_LEFT_CLICK = 100;
 constexpr const int ACTION_MOUSE_RIGHT_CLICK = 101;
