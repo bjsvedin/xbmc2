@@ -387,13 +387,14 @@ bool CApplication::Create()
 
   // Log Cache GUI settings (replacement of cache in advancedsettings.xml)
   const auto settings = settingsComponent->GetSettings();
+  const float readFactor = settings->GetInt(CSettings::SETTING_FILECACHE_READFACTOR) / 100.0f;
   CLog::Log(LOGINFO,
-            "New Cache GUI Settings (replacement of cache in advancedsettings.xml) are:\n - Buffer "
-            "Mode: {}\n - Memory Size: {} MB\n - Read "
-            "Factor: {:.2f} x\n - Chunk Size : {} bytes",
+            "New Cache GUI Settings (replacement of cache in advancedsettings.xml) are:\n  Buffer "
+            "Mode: {}\n  Memory Size: {} MB\n  Read "
+            "Factor: {:.2f} x {}\n  Chunk Size : {} bytes",
             settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE),
-            settings->GetInt(CSettings::SETTING_FILECACHE_MEMORYSIZE),
-            settings->GetInt(CSettings::SETTING_FILECACHE_READFACTOR) / 100.0f,
+            settings->GetInt(CSettings::SETTING_FILECACHE_MEMORYSIZE), readFactor,
+            (readFactor < 1.0f) ? "(adaptive)" : "",
             settings->GetInt(CSettings::SETTING_FILECACHE_CHUNKSIZE));
 
   CLog::Log(LOGINFO, "creating subdirectories");
@@ -2333,10 +2334,16 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   if (!stackHelper->InitializeStack(item))
     return false;
 
-  int startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
+  std::optional<int> startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
+  if (!startoffset)
+  {
+    CLog::LogF(LOGERROR, "Failed to obtain start offset for stack {}. Aborting playback.",
+               item.GetDynPath());
+    return false;
+  }
 
   CFileItem selectedStackPart = stackHelper->GetCurrentStackPartFileItem();
-  selectedStackPart.SetStartOffset(startoffset);
+  selectedStackPart.SetStartOffset(startoffset.value());
 
   if (item.HasProperty("savedplayerstate"))
   {
